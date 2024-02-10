@@ -14,9 +14,18 @@ router.post('/', (req, res, next) => {
 });
 
 router.get('/:id_produto', (req, res, next) => {
-  res.status(200).send({
-    mensagem: 'Usando o GET de um produto exclusivo',
-  });
+  const id = req.params.id_produto;
+
+  if (id === 'especial') {
+    res.status(200).send({
+      mensagem: 'Você passou um ID',
+      id: id,
+    });
+  } else {
+    res.status(200).send({
+      mensagem: 'Você passou um ID',
+    });
+  }
 });
 
 module.exports = router;
