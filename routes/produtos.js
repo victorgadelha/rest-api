@@ -13,4 +13,10 @@ router.post('/', (req, res, next) => {
   });
 });
 
+router.get('/:id_produto', (req, res, next) => {
+  res.status(200).send({
+    mensagem: 'Usando o GET de um produto exclusivo',
+  });
+});
+
 module.exports = router;
