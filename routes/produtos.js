@@ -31,12 +31,14 @@ router.get('/:id_produto', (req, res, next) => {
   }
 });
 
+// ALTERA UM PRODUTO
 router.patch('/', (req, res, next) => {
   res.status(201).send({
     mensagem: 'Usando o PATCH  dentro da rota de produtos',
   });
 });
 
+// EXCLUI UM PRODUTO
 router.delete('/', (req, res, next) => {
   res.status(201).send({
     mensagem: 'Usando o DELETE dentro da rota de produtos',
