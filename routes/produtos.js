@@ -10,7 +10,7 @@ router.get('/', (req, res, next) => {
 
 // INSERE UM PRODUTO
 router.post('/', (req, res, next) => {
-  res.status(200).send({
+  res.status(201).send({
     mensagem: 'Usando o POST dentro da rota de produtos',
   });
 });
@@ -29,6 +29,18 @@ router.get('/:id_produto', (req, res, next) => {
       mensagem: 'Você passou um ID',
     });
   }
+});
+
+router.patch('/', (req, res, next) => {
+  res.status(201).send({
+    mensagem: 'Usando o PATCH  dentro da rota de produtos',
+  });
+});
+
+router.delete('/', (req, res, next) => {
+  res.status(201).send({
+    mensagem: 'Usando o DELETE dentro da rota de produtos',
+  });
 });
 
 module.exports = router;
