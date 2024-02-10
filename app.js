@@ -1,9 +1,12 @@
-const express = require("express");
+const express = require('express');
 const app = express();
 
-app.use("/teste", (req, res, next) => {
+const rotaProdutos = require('./routes/produtos');
+
+app.use('/produtos', rotaProdutos);
+app.use('/teste', (req, res, next) => {
   res.status(200).send({
-    mensagem: "OK, deu certo!",
+    mensagem: 'OK, deu certo!',
   });
 });
 
