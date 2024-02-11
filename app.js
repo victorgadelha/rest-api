@@ -10,6 +10,9 @@ const rotaPedidos = require('./routes/pedidos');
 app.use('/produtos', rotaProdutos);
 app.use('/pedidos', rotaPedidos);
 
+app.use((req, res, next) => {
+  const erro = new Error('Não encontrado.');
+});
 
 app.use('/teste', (req, res, next) => {
   res.status(200).send({
