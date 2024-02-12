@@ -20,7 +20,7 @@ router.post('/', (req, res, next) => {
   mysql.getConnection((error, conn) => {
     conn.query(
       'INSERT INTO produtos (nome, preco) VALUES (?,?)',
-      [req.body.name, req.body.preco],
+      [req.body.nome, req.body.preco],
       (error, resultado, field) => {
         conn.release();
         if (error) {
