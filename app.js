@@ -10,6 +10,23 @@ app.use(bodyParser.json());
 const rotaProdutos = require('./routes/produtos');
 const rotaPedidos = require('./routes/pedidos');
 
+app.use((req, res, next) => {
+  res.header('Acces-Control-Allow-Origin', '*');
+  res.header(
+    'Acces-Control-Allow-Header',
+    'Content-Type',
+    'Origin',
+    'X-Requested-With',
+    'Authorization'
+  );
+
+  if (req.method === 'OPTIONS') {
+    res.header('Access-Control-Allow-Methods', 'PUT, POST, PATCH, DELETE, GET');
+    return res.status(200).send({});
+  }
+  next();
+});
+
 app.use('/produtos', rotaProdutos);
 app.use('/pedidos', rotaPedidos);
 
