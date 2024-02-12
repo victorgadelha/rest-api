@@ -90,8 +90,24 @@ router.patch('/', (req, res, next) => {
 
 // EXCLUI UM PRODUTO
 router.delete('/', (req, res, next) => {
-  res.status(202).send({
-    mensagem: 'Produto excluído',
+  mysql.getConnection((error, conn) => {
+    if (error) {
+      return res.status(500).send({ error: error });
+    }
+    const { id_produto } = req.body;
+    conn.query(
+      'DELETE FROM produtos WHERE id_produto = ?',
+      [id_produto],
+      (error, resultado, field) => {
+        if (error) {
+          return res.status(500).send({ error: error });
+        }
+
+        return res.status(202).send({
+          mensagem: 'Produto removido com sucesso',
+        });
+      }
+    );
   });
 });
 
