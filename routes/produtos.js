@@ -65,8 +65,26 @@ router.get('/:id_produto', (req, res, next) => {
 
 // ALTERA UM PRODUTO
 router.patch('/', (req, res, next) => {
-  res.status(201).send({
-    mensagem: 'Produto alterado',
+  mysql.getConnection((error, conn) => {
+    if (error) {
+      return res.status(500).send({ error: error });
+    }
+
+    const { nome, preco, id_produto } = req.body;
+    conn.query(
+      'UPDATE produtos SET nome = ?, preco = ? WHERE id_produto = ?',
+      [nome, preco, id_produto],
+      (error, resultado, field) => {
+        conn.release();
+        if (error) {
+          return res.status(500).send({ error: error });
+        }
+
+        res.status(201).send({
+          mensagem: 'Produto alterado com sucesso!',
+        });
+      }
+    );
   });
 });
 
