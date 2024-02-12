@@ -4,9 +4,6 @@ const mysql = require('../mysql').pool;
 
 // RETORNA TODOS OS PRODUTOS
 router.get('/', (req, res, next) => {
-  // res.status(200).send({
-  // mensagem: 'Retorna todos os produtos',
-  // });
   mysql.getConnection((error, conn) => {
     if (error) {
       return res.status(500).send({ error: error });
@@ -22,12 +19,6 @@ router.get('/', (req, res, next) => {
 
 // INSERE UM PRODUTO
 router.post('/', (req, res, next) => {
-  //const { nome, preco } = req.body;
-  //const produto = {
-  // nome,
-  // preco,
-  //};
-
   mysql.getConnection((error, conn) => {
     if (error) {
       return res.status(500).send({ error: error });
