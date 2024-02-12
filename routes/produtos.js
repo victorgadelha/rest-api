@@ -80,7 +80,7 @@ router.patch('/', (req, res, next) => {
           return res.status(500).send({ error: error });
         }
 
-        res.status(201).send({
+        res.status(202).send({
           mensagem: 'Produto alterado com sucesso!',
         });
       }
@@ -90,7 +90,7 @@ router.patch('/', (req, res, next) => {
 
 // EXCLUI UM PRODUTO
 router.delete('/', (req, res, next) => {
-  res.status(201).send({
+  res.status(202).send({
     mensagem: 'Produto excluído',
   });
 });
