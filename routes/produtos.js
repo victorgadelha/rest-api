@@ -45,18 +45,22 @@ router.post('/', (req, res, next) => {
 
 // RETORNA OS DADOS DE UM PRODUTO
 router.get('/:id_produto', (req, res, next) => {
-  const id = req.params.id_produto;
-
-  if (id === 'especial') {
-    res.status(200).send({
-      mensagem: 'Você passou um ID',
-      id: id,
-    });
-  } else {
-    res.status(200).send({
-      mensagem: 'Você passou um ID',
-    });
-  }
+  mysql.getConnection((error, conn) => {
+    if (error) {
+      return res.status(500).send({ error: error });
+    }
+    const { id_produto } = req.params;
+    conn.query(
+      'SELECT * FROM produtos WHERE id_produto = ?',
+      [id_produto],
+      (error, resultado, field) => {
+        if (error) {
+          return res.status(500).send({ error: error });
+        }
+        return res.status(200).send(resultado);
+      }
+    );
+  });
 });
 
 // ALTERA UM PRODUTO
