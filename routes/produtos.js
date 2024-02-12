@@ -8,7 +8,17 @@ router.get('/', (req, res, next) => {
   // mensagem: 'Retorna todos os produtos',
   // });
 
-  mysql.getConnection((error, conn));
+  mysql.getConnection((error, conn) => {
+    if (error) {
+      return res.status(500).send({ error: error });
+    }
+    conn.query('SELECT * FROM produtos', (error, resultado, field) => {
+      if (error) {
+        return res.status(500).send({ error: error });
+      }
+      return res.status(200).send({ response: resultado });
+    });
+  });
 });
 
 // INSERE UM PRODUTO
@@ -29,7 +39,7 @@ router.post('/', (req, res, next) => {
       (error, resultado, field) => {
         conn.release();
         if (error) {
-          return res.status(500).send({ error: error, response: null });
+          return res.status(500).send({ error: error });
         }
 
         res.status(201).send({
