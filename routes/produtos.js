@@ -8,21 +8,21 @@ router.get('/', (req, res, next) => {
     if (error) {
       return res.status(500).send({ error: error });
     }
-    conn.query('SELECT * FROM produtos', (error, resultado, field) => {
+    conn.query('SELECT * FROM produtos', (error, result, field) => {
       if (error) {
         return res.status(500).send({ error: error });
       }
       const response = {
-        quantidade: resultado.length,
-        produtos: resultado.map((prod) => {
+        quantidade: result.length,
+        produtos: result.map((prod) => {
           return {
             id_produto: prod.id_produto,
-            nome: prod.nome,
+            nome: prod.name,
             preco: prod.preco,
             request: {
               tipo: 'GET',
-              descricao: '',
-              url: 'http://localhost:3000/produtos/' + prod.id_produto,
+              descricao: 'Retorna todos os produtos.',
+              url: `http://localhost:3000/produtos/{prod.id_produto}`,
             },
           };
         }),
@@ -43,22 +43,31 @@ router.post('/', (req, res, next) => {
     conn.query(
       'INSERT INTO produtos (nome, preco) VALUES (?,?)',
       [nome, preco],
-      (error, resultado, field) => {
+      (error, result, field) => {
         conn.release();
         if (error) {
           return res.status(500).send({ error: error });
         }
-
-        res.status(201).send({
-          mensagem: 'Produto inserido com sucesso!',
-          id_produto: resultado.insertId,
-        });
+        const response = {
+          mensagem: 'Produto inserido com sucesso.',
+          produtoCriado: {
+            id_produto: result.insertId,
+            nome,
+            preco,
+            request: {
+              tipo: 'POST',
+              descricao: 'Insere um produto',
+              url: `http://localhost:3000/produtos/${result.insertId}`,
+            },
+          },
+        };
+        res.status(201).send(response);
       }
     );
   });
 });
 
-// RETORNA OS DADOS DE UM PRODUTO
+// RETORNA OS DADOS DE UM PRODUTO ESPECÍFICO
 router.get('/:id_produto', (req, res, next) => {
   mysql.getConnection((error, conn) => {
     if (error) {
