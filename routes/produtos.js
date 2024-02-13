@@ -12,7 +12,22 @@ router.get('/', (req, res, next) => {
       if (error) {
         return res.status(500).send({ error: error });
       }
-      return res.status(200).send(resultado);
+      const response = {
+        quantidade: resultado.length,
+        produtos: resultado.map((prod) => {
+          return {
+            id_produto: prod.id_produto,
+            nome: prod.nome,
+            preco: prod.preco,
+            request: {
+              tipo: 'GET',
+              descricao: '',
+              url: 'http://localhost:3000/produtos/' + prod.id_produto,
+            },
+          };
+        }),
+      };
+      return res.status(200).send(response);
     });
   });
 });
