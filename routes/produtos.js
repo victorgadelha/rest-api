@@ -113,26 +113,37 @@ router.patch('/', (req, res, next) => {
       return res.status(500).send({ error: error });
     }
 
-    const { nome, preco } = req.body;
+    const { nome, preco, id_produto } = req.body;
+
+    if (!id_produto) {
+      return res.status(400).send({ mensagem: 'ID do produto não fornecido.' });
+    }
+
     conn.query(
-      'INSERT INTO produtos (nome, preco) VALUES (?,?)',
-      [nome, preco],
+      'UPDATE produtos SET nome = ?, preco = ? WHERE id_produto = ?',
+      [nome, preco, id_produto],
+
       (error, result, field) => {
         conn.release();
         if (error) {
           return res.status(500).send({ error: error });
         }
+        if (result.affectedRows === 0) {
+          return res
+            .status(404)
+            .send({ mensagem: 'Produto não encontrado ou ID inválido.' });
+        }
         const response = {
           mensagem: 'Produto editado com sucesso.',
-          produtoCriado: {
-            id_produto: result.insertId,
+          produto: {
+            id_produto,
             nome,
             preco,
-            request: {
-              tipo: 'POST',
-              descricao: 'edita um produto',
-              url: `http://localhost:3000/produtos/${result.insertId}`,
-            },
+          },
+          request: {
+            tipo: 'PATCH',
+            descricao: 'edita um produto',
+            url: `http://localhost:3000/produtos/${id_produto}`,
           },
         };
         return res.status(201).send(response);
