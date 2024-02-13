@@ -159,17 +159,35 @@ router.delete('/', (req, res, next) => {
       return res.status(500).send({ error: error });
     }
     const { id_produto } = req.body;
+    if (!id_produto) {
+      res.status(400).send({ mensagem: 'ID não fornecido.' });
+    }
     conn.query(
       'DELETE FROM produtos WHERE id_produto = ?',
       [id_produto],
-      (error, resultado, field) => {
+      (error, result, field) => {
+        conn.release();
         if (error) {
           return res.status(500).send({ error: error });
         }
+        if (result.affectedRows === 0) {
+          res
+            .status(404)
+            .send({ mensagem: 'Produto não encontrado ou ID inválido.' });
+        }
 
-        return res.status(202).send({
+        const response = {
           mensagem: 'Produto removido com sucesso',
-        });
+          request: 'DELETE',
+          descricao: 'Remove um produto',
+          url: `http://localhost:3000/produtos`,
+          body: {
+            nome: 'String',
+            preco: 'Number',
+          },
+        };
+
+        return res.status(202).send(response);
       }
     );
   });
