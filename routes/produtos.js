@@ -61,7 +61,7 @@ router.post('/', (req, res, next) => {
             },
           },
         };
-        res.status(201).send(response);
+        return res.status(201).send(response);
       }
     );
   });
@@ -77,11 +77,29 @@ router.get('/:id_produto', (req, res, next) => {
     conn.query(
       'SELECT * FROM produtos WHERE id_produto = ?',
       [id_produto],
-      (error, resultado, field) => {
+      (error, result, field) => {
         if (error) {
           return res.status(500).send({ error: error });
         }
-        return res.status(200).send(resultado);
+        if (result.length == 0) {
+          return res
+            .status(404)
+            .send({ mensagem: 'Não foi encontrado produto com este ID' });
+        }
+        const { nome, preco } = result[0];
+        const response = {
+          produto: {
+            id_produto,
+            nome,
+            preco,
+            request: {
+              tipo: 'GET',
+              descricao: 'Retorna um produto específico',
+              url: `http://localhost:3000/produtos`,
+            },
+          },
+        };
+        return res.status(200).send(response);
       }
     );
   });
