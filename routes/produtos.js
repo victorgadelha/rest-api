@@ -15,10 +15,11 @@ router.get('/', (req, res, next) => {
       const response = {
         quantidade: result.length,
         produtos: result.map((prod) => {
+          const { id_produto, nome, preco } = prod;
           return {
-            id_produto: prod.id_produto,
-            nome: prod.name,
-            preco: prod.preco,
+            id_produto,
+            nome,
+            preco,
             request: {
               tipo: 'GET',
               descricao: 'Retorna todos os produtos.',
@@ -112,19 +113,29 @@ router.patch('/', (req, res, next) => {
       return res.status(500).send({ error: error });
     }
 
-    const { nome, preco, id_produto } = req.body;
+    const { nome, preco } = req.body;
     conn.query(
-      'UPDATE produtos SET nome = ?, preco = ? WHERE id_produto = ?',
-      [nome, preco, id_produto],
-      (error, resultado, field) => {
+      'INSERT INTO produtos (nome, preco) VALUES (?,?)',
+      [nome, preco],
+      (error, result, field) => {
         conn.release();
         if (error) {
           return res.status(500).send({ error: error });
         }
-
-        res.status(202).send({
-          mensagem: 'Produto alterado com sucesso!',
-        });
+        const response = {
+          mensagem: 'Produto editado com sucesso.',
+          produtoCriado: {
+            id_produto: result.insertId,
+            nome,
+            preco,
+            request: {
+              tipo: 'POST',
+              descricao: 'edita um produto',
+              url: `http://localhost:3000/produtos/${result.insertId}`,
+            },
+          },
+        };
+        return res.status(201).send(response);
       }
     );
   });
